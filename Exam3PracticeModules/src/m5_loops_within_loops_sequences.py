@@ -136,6 +136,7 @@ def integers(sequence_of_sequences):
                 new_list.append(sequence_of_sequences[k][j])
     return new_list
 
+
 def run_test_big_letters():
     """ Tests the    big_letters    function. """
     # ------------------------------------------------------------------
