@@ -89,7 +89,7 @@ def hourglass(window, n, point, radius, color):
     a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # DONE: 2. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -102,10 +102,38 @@ def hourglass(window, n, point, radius, color):
     #    TIME ESTIMATE:  25 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
 
-    circle = rg.Circle(point, radius)
-    circle.attach_to(window)
-    circle.fill_color = color
-    window.render()
+    import math
+
+    def circle_line(center_cl, radius_cl):
+        circle = rg.Circle(center_cl, radius_cl)
+        circle.fill_color = color
+        circle.attach_to(window)
+        
+        start_x = center_cl.x - radius_cl
+        start = rg.Point(start_x, center_cl.y)
+        end_x = start_x + radius_cl * 2
+        end = rg.Point(end_x, center_cl.y)
+        line = rg.Line(start, end)
+        line.attach_to(window)
+        
+        window.render()
+
+    def triangle(peak_point,direction):
+        original_x = peak_point.x
+        original_y = peak_point.y
+
+        center = rg.Point(original_x, original_y)
+
+        for k in range(n):
+            for j in range(k + 1):
+                circle_line(center, radius)
+                center.move_by(direction * 2 * radius, 0)
+            original_x = original_x - radius * direction
+            original_y = original_y + (radius * math.sqrt(3)) * direction
+            center = rg.Point(original_x, original_y)
+
+    triangle(point, 1)
+    triangle(point, -1)
 
 def run_test_many_hourglasses():
     """ Tests the    many_hourglasses    function. """
@@ -183,6 +211,24 @@ def many_hourglasses(window, square, m, colors):
     #                         a correct "hourglass" function above)
     #    TIME ESTIMATE:  20 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+
+    import math
+
+    square.attach_to(window)
+    window.render()
+
+    rectangle = square.get_bounding_box()
+    radius = square.length_of_each_side
+
+    top_left = rectangle.get_upper_left_corner()
+    bot_right = rectangle.get_lower_right_corner()
+
+    for k in range(m):
+        rectangle.attach_to(window)
+        hourglass(window, k + 1, rectangle.get_center(), square.length_of_each_side / 2, colors[k % len(colors)])
+        top_left.move_by(radius * (k + 1), -radius * math.sqrt(3) / 2)
+        bot_right.move_by(radius * (k + 2), radius * math.sqrt(3) / 2)
+        rectangle = rg.Rectangle(top_left, bot_right)
 
 
 # ----------------------------------------------------------------------
